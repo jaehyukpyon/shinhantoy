@@ -24,18 +24,9 @@
                     for (let i = 0; i < result.results.length; i++) {
                         const content = result.results[i];
                         $('#content').append(`
-                        <tr>
-                            <td>${content.id}</td>
-                            <td>${content.ord_ymd}</td>
-                            <td>${content.acct_mang_dbrn_code}</td>
-                            <td>${content.ord_no}</td>
-                            <td>${content.acct_no}</td>
-                            <td>${content.callv_type_code}</td>
-                            <td>${content.sell_buy_tp_code}</td>
-                            <td>${content.stbd_code}</td>
-                            <td>${content.ord_qty}</td>
-                            <td>${content.ord_uv}</td>
-                            <td>${content.mrgn_base_uv}</td>
+                        <tr>                            
+                            <td>${content.ord_ymd}</td>                            
+                            <td>${content.ord_no}</td>                            
                         </tr>
                         `);
                     }
@@ -56,17 +47,17 @@
         <table class="table table-dark table-hover text-center">
             <thead>
                 <tr>
-                    <th class="table-light">ID</th>
-                    <th class="table-light">ORD_YMD</th>
-                    <th class="table-light">ACCT_MANG_DBRN_CODE</th>
-                    <th class="table-light">ORD_NO</th>
-                    <th class="table-light">ACCT_NO</th>
+                    <!-- <th class="table-light">ID</th> -->
+                    <th class="table-light">ORD_YMD (주문일자)</th>
+                    <!-- <th class="table-light">ACCT_MANG_DBRN_CODE</th> -->
+                    <th class="table-light">ORD_NO (주문번호)</th>
+                    <!-- <th class="table-light">ACCT_NO</th>
                     <th class="table-light">CALLV_TYPE_CODE</th>
                     <th class="table-light">SELL_BUY_TP_CODE</th>
                     <th class="table-light">STBD_CODE</th>
                     <th class="table-light">ORD_QTY</th>
                     <th class="table-light">ORD_UV</th>
-                    <th class="table-light">MRGN_BASE_UV</th>
+                    <th class="table-light">MRGN_BASE_UV</th> -->
                 </tr>
             </thead>
             <tbody id="content">
