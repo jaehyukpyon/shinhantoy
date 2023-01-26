@@ -87,6 +87,7 @@
                 }, 
                 error: (result) => {
                     console.error(result.error)
+                    alert('Access Token 값을 제대로 입력했는지 확인해주세요.')
                 }
             });
         }
@@ -181,7 +182,9 @@
         <br>
 
         <input class="form-control" type="text" id="token" name="token">
-        <label for="token">Token Please</label><br>
+        <label for="token">Access Token Please</label>
+        <br>
+        <br>
         <button type="button" class="btn btn-primary" id="writecomment">댓글등록</button>
 
         <hr>
