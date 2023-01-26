@@ -20,9 +20,7 @@ class OrderListView(
         return self.list(request, args, kwargs)
     
         
-def order_detail_page_move(request):
-    print('###', settings.BASE_DIR.__str__()+ 'abcdef')
-    
+def order_detail_page_move(request):    
     return render(request, 'order_detail.html')   
 
 class OrderDetailView(
