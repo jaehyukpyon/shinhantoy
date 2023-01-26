@@ -10,18 +10,20 @@ class OrderListSerializer(serializers.ModelSerializer):
 
 class CommentSerializer(serializers.ModelSerializer):
     
-    member = serializers.HiddenField(
-        default=serializers.CurrentUserDefault(),
-        required=False,
-    )
-    
+    member = serializers.HiddenField(default=serializers.CurrentUserDefault(), required=False)  
+    created = serializers.DateTimeField(read_only=True, format='%Y-%m-%d %H:%M:%S')  
     writer = serializers.SerializerMethodField()
+    # editable = serializers.SerializerMethodField()
     
     def get_writer(self, obj):
         # print('obj >> ', obj.member.username)
         return obj.member.username
     
-    created = serializers.DateTimeField(read_only=True, format='%Y-%m-%d %H:%M:%S')
+    # def get_editable(self, obj):
+    #     if (obj.member.username == self.context.get('request').user.username):
+    #         return True
+    #     else:
+    #         return False    
     
     def validate_member(self, value):
         print('value >> ', value)

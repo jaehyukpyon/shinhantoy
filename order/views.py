@@ -59,32 +59,17 @@ class CommentWriteView(
         # request.data = data
         return self.create(request, args, kwargs)
     
-class CommentCreateListView(
-    mixins.CreateModelMixin, 
-    mixins.ListModelMixin,
+class CommentCreateView(
+    mixins.CreateModelMixin,
     generics.GenericAPIView,
 ):
     
     permission_classes = [IsAuthenticated]
     
-    def get_queryset(self):
-        return Comment.objects.filter(order_id=self.kwargs['order_id'])
-    
     serializer_class = CommentSerializer
-    
-    def get(self, request, *args, **kwargs):
-        return self.list(request, args, kwargs)
     
     def post(self, request, *args, **kwargs):
         print('##### request.data > ', request.data)
-        # data = {}
-        # for key, value in request.data.lists():
-        #     print(f'@@@@@ key: {key}, value: {value[0].strip()}')
-        #     data[key] = value[0].strip()
-        
-        # data['member'] = request.user.id
-        # print(f'$$$$$ data > {data}')
-        # request.data = data
         return self.create(request, args, kwargs)
     
 class CommentListView(
