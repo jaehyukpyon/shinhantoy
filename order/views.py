@@ -1,10 +1,11 @@
 from django.shortcuts import render
+from django.conf import settings
 from rest_framework import generics, mixins
 from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 from .serializers import OrderListSerializer, CommentSerializer
 from .models import Order, Comment
-from django.conf import settings
-from rest_framework.permissions import IsAuthenticated
 
 # Create your views here.
 
@@ -12,6 +13,7 @@ class OrderListView(
     mixins.ListModelMixin,
     generics.GenericAPIView,
 ):
+    
     serializer_class = OrderListSerializer
     
     def get_queryset(self):
@@ -43,8 +45,8 @@ class CommentWriteView(
     mixins.CreateModelMixin, 
     generics.GenericAPIView
 ):
-    permission_classes = [IsAuthenticated]
     
+    permission_classes = [IsAuthenticated]    
     serializer_class = CommentSerializer
     
     def post(self, request, *args, **kwargs):
@@ -64,8 +66,7 @@ class CommentCreateView(
     generics.GenericAPIView,
 ):
     
-    permission_classes = [IsAuthenticated]
-    
+    permission_classes = [IsAuthenticated]    
     serializer_class = CommentSerializer
     
     def post(self, request, *args, **kwargs):
@@ -84,3 +85,30 @@ class CommentListView(
     
     def get(self, request, *args, **kwargs):
         return self.list(request, args, kwargs)
+    
+class CommentDeleteView(
+    mixins.DestroyModelMixin, 
+    generics.GenericAPIView,
+):
+    permission_classes = [IsAuthenticated] 
+    queryset = Comment.objects.all()
+    
+    def delete(self, request, *args, **kwargs):
+        comment = Comment.objects.get(id=self.kwargs['pk'])
+        
+        if not comment:
+            return Response({
+                'detail': 'Comment does not exist'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        if comment.member.username != request.user.username:
+            print('작성자가 아님!!!!!!!!!!!!')
+            return Response({
+                'detail': 'Not Writer of This Comment.'
+            }, status=status.HTTP_400_BAD_REQUEST)        
+        elif comment.member.username == request.user.username:
+            return self.destroy(request, args, kwargs)
+        else:     
+            return Response({
+                'detail': 'Internal Error!'
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

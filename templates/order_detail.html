@@ -44,6 +44,8 @@
             })
         });
 
+        let i = 0;
+
         const loadComment = function () {
             $('#comment_area').empty();
             $.ajax({
@@ -59,10 +61,20 @@
                                 <td>${item.id}</td>                            
                                 <td>${item.writer}</td>
                                 <td>${item.created}</td>
-                                <td>${item.content}</td>                            
+                                <td>${item.content} <button type='button' class='btn btn-sm btn-danger' data-bs-toggle='modal' data-bs-target='#staticBackdrop'>댓글삭제</button></td>                            
                             </tr>
                             `);
                     }
+                    $('.btn-danger').on('click', function () {
+                        console.log('deletemodalbtn')
+                        const writer = $(this).parent().parent().children('td:eq(1)').text();
+                        $('#writer2').text(writer);
+                        const commentid = $(this).parent().parent().children('td:eq(0)').text();
+                        $('#commentid').attr('value', commentid);
+                    });
+                    $('#deletecommentbtn').on('click', () => {
+                        deleteComment();
+                    });
                 }, 
                 error: (result) => {
                     console.error(result.error)
@@ -74,6 +86,7 @@
             $.ajax({
                 type: 'POST',
                 url: 'http://127.0.0.1:8000/api/order/' + $('#pk').text() +'/comment/',
+
                 data: {
                     order: $('#pk').text(),
                     content: $('#content').val().trim()
@@ -82,11 +95,14 @@
                     xhr.setRequestHeader('Authorization', 'JWT ' + $('#token').val());
                 },
                 success: (result) => {
-                    alert('댓글이 등록되었습니다.')
+                    alert('댓글이 등록되었습니다.');
+                    $('#content').text('');
+                    $('#token').val('');
                     loadComment();
                 }, 
                 error: (result) => {
-                    console.error(result.error)
+                    console.error(result.error);
+                    $('#token').attr('value', '');
                     alert('Access Token 값을 제대로 입력했는지 확인해주세요.')
                 }
             });
@@ -103,7 +119,7 @@
     <div class="container text-center">
         <br>
         <br>
-        <h2 id="title">Order 정보 상세 조회<br>Order PK:<span id="pk"></span></h2>
+        <h2 id="title">Order 정보 상세 조회<br>Order PK:<span id='pk'></span></h2>
     </div>
 
     <br>
@@ -205,12 +221,51 @@
     <br>
     <hr>
 
+    <input type="text" style="display: none;" id="commentid">
+
+    <!-- Modal -->
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">본인이 작성한 댓글만 삭제할 수 있습니다.</h1>
+                </div>
+            <div class="modal-body">
+                <span>댓글 작성자(username): '<span id="writer2"></span>'의 <br>Access Token을 입력하세요.</span><br><br>
+                <input type="text" placeholder="Access Token을 입력하세요" id="deletetoken" class="form-control">
+            </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+                    <button type="button" class="btn btn-warning" id="deletecommentbtn">댓글삭제</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
-        
-            
         $(document).ready(function () {
-            loadComment()
-        })       
+            loadComment();
+        });
+        
+        const deleteComment = function () {
+            $.ajax({
+                type: 'DELETE',
+                url: 'http://127.0.0.1:8000/api/order/' + $('#pk').text() + '/comment/' + $('#commentid').val() + '/', 
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('Authorization', 'JWT ' + $('#deletetoken').val());
+                }
+            }).done(function (result) {
+                console.log('!!!!');
+                alert('삭제 완료');
+                console.dir(result)
+                $('#staticBackdrop').modal('hide');
+                loadComment();
+            }).fail(function (result) {
+                alert('오류 발생.')
+                $('#staticBackdrop').modal('hide');
+                loadComment();
+            })
+        }
     </script>
 
 </body>

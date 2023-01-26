@@ -7,4 +7,5 @@ urlpatterns = [
     path('<int:pk>/', views.OrderDetailView.as_view()),
     path('<int:order_id>/comment/', views.CommentCreateView.as_view()),
     path('<int:order_id>/comments/', views.CommentListView.as_view()),
+    path('<int:order_id>/comment/<int:pk>/', views.CommentDeleteView.as_view()),
 ]
