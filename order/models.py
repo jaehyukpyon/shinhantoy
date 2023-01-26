@@ -18,3 +18,16 @@ class Order(models.Model):
         db_table = 'shinhan_order'
         verbose_name = '주문정보'
         verbose_name_plural = '주문정보(들)'
+       
+        
+class Comment(models.Model):
+    order = models.ForeignKey('order.Order', on_delete=models.CASCADE)
+    member = models.ForeignKey('member.Member', on_delete=models.CASCADE)
+    content = models.TextField()
+    created = models.DateTimeField(auto_now_add=True, blank=True)
+    
+    class Meta:
+        db_table = 'shinhan_order_comment'
+        verbose_name = '주문의 댓글'
+        verbose_name_plural = '주문의 댓글(들)'
+        

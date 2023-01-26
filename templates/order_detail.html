@@ -38,7 +38,62 @@
                     $('#ORD_UV').text(result.ord_uv);
                     $('#MRGN_BASE_UV').text(result.mrgn_base_uv);
                 });
+
+            $('#writecomment').on('click', function () {
+                submitComment();
+            })
         });
+
+        const loadComment = function () {
+            $('#comment_area').empty();
+            $.ajax({
+                type: 'GET',
+                url: 'http://127.0.0.1:8000/api/order/' + $('#pk').text() + '/comments/',            
+                success: (result) => {
+                    for (let i = 0; i < result.results.length; i++) {
+                            const item = result.results[i];
+                            console.log('-------------')
+                            console.log(item)
+                            $('#comment_area').append(`
+                            <tr>                            
+                                <td>${item.id}</td>                            
+                                <td>${item.writer}</td>
+                                <td>${item.created}</td>
+                                <td>${item.content}</td>                            
+                            </tr>
+                            `);
+                    }
+                }, 
+                error: (result) => {
+                    console.error(result.error)
+                }
+            });            
+        }
+
+        const submitComment = function () {
+            $.ajax({
+                type: 'POST',
+                url: 'http://127.0.0.1:8000/api/order/' + $('#pk').text() +'/comment/',
+                data: {
+                    order: $('#pk').text(),
+                    content: $('#content').val().trim()
+                },
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('Authorization', 'JWT ' + $('#token').val());
+                },
+                success: (result) => {
+                    alert('댓글이 등록되었습니다.')
+                    loadComment();
+                }, 
+                error: (result) => {
+                    console.error(result.error)
+                }
+            });
+        }
+    </script>
+
+    <script>
+        
     </script>
 </head>
 
@@ -119,14 +174,43 @@
     <hr>
 
     <div class="container">
+        <textarea class="form-control" name="content" id="content" cols="30" rows="10">
+
+        </textarea>
+
+        <br>
+
+        <input class="form-control" type="text" id="token" name="token">
+        <label for="token">Token Please</label><br>
+        <button type="button" class="btn btn-primary" id="writecomment">댓글등록</button>
+
+        <hr>
+        <h3>댓글 리스트</h3>
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th></th>
+                    <th>댓글ID</th>
+                    <th>작성자</th>
+                    <th>작성일시</th>
+                    <th>내용</th>
                 </tr>
             </thead>
+            <tbody id="comment_area">
+            </tbody>
         </table>
     </div>
+
+    <br>
+    <br>
+    <hr>
+
+    <script>
+        
+            
+        $(document).ready(function () {
+            loadComment()
+        })       
+    </script>
 
 </body>
 
