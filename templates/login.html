@@ -56,7 +56,7 @@
                 </div>                
 
                 <!-- Submit button -->
-                <button id="loginbtn" type="button" class="btn btn-primary btn-block mb-4" onclick="login()">Sign in</button>
+                <button id="loginbtn" type="button" class="btn btn-primary btn-block mb-4">Sign in</button>
             </form>
         </div>
         <div id="token" style="word-break: break-all;">
@@ -64,6 +64,9 @@
     </div>
 
     <script>
+        $('#loginbtn').on('click', function () {
+            login();
+        })
         $('#password').on('keyup', function (key) {
             if (key.keyCode == 13) {
                 $('#loginbtn').click();
