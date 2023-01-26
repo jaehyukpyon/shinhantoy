@@ -16,11 +16,12 @@
         crossorigin="anonymous"></script>
 
     <script>
-        let isvalid = false;
+        let password_length_valid = false;
+        let password_equal_valid = false;
         let notduplicate = false;
 
         const signup = function () {
-            if (isvalid && notduplicate) {
+            if (notduplicate && password_length_valid && password_equal_valid) {
                 $.ajax({
                     type: 'POST',
                     url: 'http://127.0.0.1:8000/api/member/',
@@ -127,7 +128,7 @@
         })
         $('#tel').on('keyup', function (key) {
             if (key.keyCode == 13) {
-                if (isvalid) {
+                if (notduplicate && password_length_valid && password_length_valid) {
                     $('#signup').click();
                 }
             }
@@ -145,13 +146,13 @@
                 $('#password1_text').val('');
                 $('#password1_text').text('');
                 $('#password1_text').text('비밀번호는 8자리 이상이어야 합니다.');
-                isvalid = false;
+                password_length_valid = false;
             } 
             else {
                 $('#password1_text').empty();
                 $('#password1_text').val('');
                 $('#password1_text').text('');
-                isvalid = false;
+                password_length_valid = true;
             }
         });
 
@@ -164,7 +165,7 @@
                 $('#password2_text').empty()
                 $('#password2_text').val('')
                 $('#password2_text').text('비밀번호가 일치하지 않습니다.');
-                isvalid = false;
+                password_equal_valid = false;
                 return;
             } 
             if ($('#password1').val() === $(this).val()) {
@@ -172,7 +173,7 @@
                 $('#password2_text').empty();
                 $('#password2_text').val('');
                 $('#password2_text').text('비밀번호가 일치합니다.');
-                isvalid = true;
+                password_equal_valid = true;
                 return;
             }
         })
