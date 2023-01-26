@@ -95,7 +95,7 @@ class CommentListView(
     serializer_class = CommentSerializer
     
     def get_queryset(self):
-        return Comment.objects.filter(order_id=self.kwargs['order_id'])
+        return Comment.objects.filter(order_id=self.kwargs['order_id']).order_by('-id')
     
     def get(self, request, *args, **kwargs):
         return self.list(request, args, kwargs)
