@@ -17,20 +17,23 @@
 
     <script>
         $(document).ready(function () {
-            $.get('http://127.0.0.1:8000/api/order')
+            const search = new URLSearchParams(location.search);
+            let currentPage = search.get('page');
+            if (!currentPage) currentPage = 1;
+            $.get('http://127.0.0.1:8000/api/order?page=' + currentPage)
                 .then((result) => {
                     console.log('Order Result');
                     console.log(result);
                     for (let i = 0; i < result.results.length; i++) {
                         const content = result.results[i];
                         $('#content').append(`
-                        <tr><a href='order_detail.html?pk=${content.id}'>                            
-                            <td>${content.ord_ymd}</td>                            
+                        <tr>                            
+                            <td><a style='display: inline-block;' href='order_detail.html?pk=${content.id}'>${content.ord_ymd}</a></td>                            
                             <td>
                                 ${content.ord_no}
                                 <span id='pk' style='display:none;'>${content.id}</span>
                             </td>                            
-                        </a></tr>
+                        </tr>
                         `);
                     }
 
@@ -38,15 +41,50 @@
                         $(this).css('cursor', 'pointer');
                     });
 
-                    $('table > tbody > tr').on('click', function () {
-                        let pk = $(this).children('td:eq(1)').children('span:eq(0)').text();
-                        console.log($(this).children('td:eq(1)').children('span:eq(0)').text());
-                        let moveTo = 'http://127.0.0.1:8000/api/order/move?pk=' + pk;
-                        location.href = moveTo
+                    // 수업시간의 강사님과 같이 코드 변경으로 필요 없어짐.
+                    // $('table > tbody > tr').on('click', function () {
+                    //     let pk = $(this).children('td:eq(1)').children('span:eq(0)').text();
+                    //     console.log($(this).children('td:eq(1)').children('span:eq(0)').text());
+                    //     let moveTo = 'http://127.0.0.1:8000/api/order/move?pk=' + pk;
+                    //     location.href = moveTo
+                    // });
+                    
+                    const search = new URLSearchParams(location.search);
+                    const resultCount = result.count;                    
+                    let totalNeedPages = Math.ceil(resultCount / 10);
+                    let currentPage = Number(search.get('page'));
+                    if (!currentPage) currentPage = 1;
+                    let realfirst = (currentPage - 2 <= 1) ? 1 : currentPage - 2;
+                    if (currentPage + 2 >= totalNeedPages) realfirst = totalNeedPages - 4
+                    let realend = realfirst + 4
+                    console.log('totalNeedPages: ' + totalNeedPages);
+                    
+                    for (let i = realfirst; i <= realend; i++) {
+                        if (i == currentPage) {
+                            $('#pagination').append(`
+                                <li class="page-item active">
+                                    <a class='page-link'>${i}</a>
+                                </li>
+                            `);
+                            continue;
+                        }
+                        $('#pagination').append(`
+                            <li class="page-item">
+                                <a class='page-link'>${i}</a>
+                            </li>
+                        `);                        
+                    }
+                    $('a.page-link').click('click', function () {
+                        console.log('clicked!')
+                        movePage($(this).text());
                     });
-                });                
+                    const movePage = function (page) {
+                        window.location.href = `?page=${page}`
+                    }  
+                }); // ajax then ends                            
             }
         );
+        
     </script>
 </head>
 
@@ -55,20 +93,24 @@
     <div class="container">
         <br>
         <h1>주문(Order) 리스트</h1>
-        <h4>* 아래 목록 중 하나를 클릭하면 상세 페이지로 이동됩니다.</h4>
+        <h4>* 아래 목록 중 주문 일자를 클릭하면 상세 페이지로 이동합니다.</h4>
         <br>
         <h1 id="productName" class="text-center"></h1>
         <br>
         <table class="table table-hover text-center table-striped">
             <thead>
                 <tr>
-                    <th class="table-light">ORD_YMD (주문일자)</th>
-                    <th class="table-light">ORD_NO (주문번호)</th>
+                    <th class="table-light">ORD_YMD >> (주문일자)</th>
+                    <th class="table-light">ORD_NO >> (주문번호)</th>
                 </tr>
             </thead>
             <tbody id="content">
             </tbody>
         </table>
+
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center" id="pagination"></ul>
+        </nav>
     </div>
 
 </body>

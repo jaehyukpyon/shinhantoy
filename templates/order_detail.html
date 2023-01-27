@@ -42,11 +42,18 @@
 
         let i = 0;
 
-        const loadComment = function () {
+        const loadComment = function (page) {
+            console.log('page >> ');
+            console.log(page);
+            console.log('----');
+            $('#pagination').empty();
+            let currentPage = Number(page);
+            if (!currentPage) currentPage = 1;
             $('#comment_area').empty();
+
             $.ajax({
                 type: 'GET',
-                url: 'http://127.0.0.1:8000/api/order/' + $('#pk').text() + '/comments',            
+                url: 'http://127.0.0.1:8000/api/order/' + $('#pk').text() + '/comments?page=' + currentPage,            
                 success: (result) => {
                     for (let i = 0; i < result.results.length; i++) {
                             const item = result.results[i];
@@ -67,13 +74,46 @@
                         $('#writer2').text(writer);
                         const commentid = $(this).parent().parent().parent().children('td:eq(0)').text();
                         $('#commentid').attr('value', commentid);
-                    });                    
+                    }); 
+                    
+                    
+                    const resultCount = Number(result.count);                    
+                    let totalNeedPages = Math.ceil(resultCount / 10);
+                    let realfirst = (currentPage - 2 <= 1) ? 1 : currentPage - 2;
+                    let realend = (realfirst + 4 > totalNeedPages) ? totalNeedPages : realfirst + 4;
+                    console.log('totalNeedPages: ' + totalNeedPages);
+                    
+                    for (let i = realfirst; i <= realend; i++) {
+                        if (i == currentPage) {
+                            $('#pagination').append(`
+                                <li class="page-item active">
+                                    <a class='page-link'>${i}</a>
+                                </li>
+                            `);
+                            continue;
+                        }
+                        $('#pagination').append(`
+                            <li class="page-item">
+                                <a class='page-link'>${i}</a>
+                            </li>
+                        `);                        
+                    }
+                    $('li.page-item').on('click', function () {
+            pageClick($(this).children('a:eq(0)').text());
+        })
                 }, 
                 error: (result) => {
                     console.error(result.error)
                 }
-            });            
+            });    
         }
+
+        const pageClick = function (page) {
+            $('#currentpage').val(page);
+            loadComment($('#currentpage').val());
+        }
+
+        
 
         const submitComment = function () {
             $.ajax({
@@ -202,6 +242,11 @@
             </thead>
             <tbody id="comment_area"></tbody>
         </table>
+        <br><hr>
+        <input style="display: none;" type="text" id="currentpage" value="1">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center" id="pagination"></ul>
+        </nav>
     </div>
 
     <br>
@@ -209,7 +254,6 @@
     <hr>
 
     <input type="text" style="display: none;" id="commentid">
-
     <!-- Modal -->
     <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -231,7 +275,7 @@
 
     <script>
         $(document).ready(function () {
-            loadComment();
+            loadComment($('#currentpage').val());
             $('#deletecommentbtn').on('click', deleteComment);
         });
         

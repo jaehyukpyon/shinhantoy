@@ -23,13 +23,14 @@ class OrderListView(
     def get(self, request, *args, **kwargs):
         return self.list(request, args, kwargs)
     
-        
-def order_detail_page_move(request):  
-    """
-    이 함수는 order_list 페이지에서 한 개의 주문을 클릭 시 상세 페이지로 이동하도록 구현하기 위해 작성했습니다.
-    단순하게 html 페이지를 보여주는 용도입니다.
-    """  
-    return render(request, 'order_detail.html')   
+  
+# 수업시간의 강사님의 같이 코드 변경으로 필요 없어짐.      
+# def order_detail_page_move(request):  
+#     """
+#     이 함수는 order_list 페이지에서 한 개의 주문을 클릭 시 상세 페이지로 이동하도록 구현하기 위해 작성했습니다.
+#     단순하게 html 페이지를 보여주는 용도입니다.
+#     """  
+#     return render(request, 'order_detail.html')   
 
 class OrderDetailView(
     mixins.RetrieveModelMixin,
