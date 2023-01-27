@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Order, Comment
+from .models import Order, Comment, Like
 
 class OrderListSerializer(serializers.ModelSerializer):    
     class Meta:
@@ -30,4 +30,17 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = '__all__'
+        
+class LikeSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Like
+        fields = '__all__'
+        extra_kwargs = {
+            'created': {
+                'required': False,
+                'read_only': True,
+                'format': '%Y-%m-%d %H:%M:%S',
+            }
+        }
         

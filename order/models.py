@@ -31,3 +31,14 @@ class Comment(models.Model):
         verbose_name = '주문의 댓글'
         verbose_name_plural = '주문의 댓글(들)'
         
+class Like(models.Model):
+    order = models.ForeignKey('order.Order', on_delete=models.CASCADE)
+    comment = models.ForeignKey('order.Comment', on_delete=models.CASCADE)
+    member = models.ForeignKey('member.Member', on_delete=models.CASCADE)
+    created = models.DateTimeField(auto_now_add=True, blank=True)
+    
+    class Meta:
+        db_table = 'shinhan_comment_like'
+        verbose_name = '주문 댓글의 좋아요'
+        verbose_name_plural = '주문 댓글의 좋아요(들)'
+    

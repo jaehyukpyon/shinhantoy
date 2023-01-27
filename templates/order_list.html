@@ -24,13 +24,13 @@
                     for (let i = 0; i < result.results.length; i++) {
                         const content = result.results[i];
                         $('#content').append(`
-                        <tr>                            
+                        <tr><a href='order_detail.html?pk=${content.id}'>                            
                             <td>${content.ord_ymd}</td>                            
                             <td>
                                 ${content.ord_no}
                                 <span id='pk' style='display:none;'>${content.id}</span>
                             </td>                            
-                        </tr>
+                        </a></tr>
                         `);
                     }
 

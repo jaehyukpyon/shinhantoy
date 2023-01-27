@@ -4,8 +4,9 @@ from rest_framework import generics, mixins
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
 from .serializers import OrderListSerializer, CommentSerializer
-from .models import Order, Comment
+from .models import Order, Comment, Like
 
 # Create your views here.
 
@@ -105,3 +106,26 @@ class CommentDeleteView(
             return Response({
                 'detail': 'Internal Error!'
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            
+class LikeCountView(
+    APIView
+):
+    
+    def get(self, request, pk):
+        pk = self.kwargs['pk']
+        queryset = Comment.objects.filter(order_id=pk)
+        print('queryset > ', queryset)
+        
+        comment_id_list = []
+        
+        if not queryset:
+            print('!@#$%^&*()')
+            
+        if queryset:
+            queryset_list = list(queryset)
+            print('##### queryset_list > ', queryset_list)
+            for item in queryset_list:                
+                comment_id_list.append(item.id)
+        print(f'comment_id_list > {comment_id_list}')
+        return Response({}, status=status.HTTP_200_OK)
+            
