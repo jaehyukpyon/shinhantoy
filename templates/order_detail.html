@@ -128,8 +128,6 @@
                 },
                 success: (result) => {
                     alert('댓글이 등록되었습니다.');
-                    $('#content').text('');
-                    $('#token').val('');
                     loadComment();
                 }, 
                 error: (result) => {
