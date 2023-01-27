@@ -23,7 +23,11 @@ class OrderListView(
         return self.list(request, args, kwargs)
     
         
-def order_detail_page_move(request):    
+def order_detail_page_move(request):  
+    """
+    이 함수는 order_list 페이지에서 한 개의 주문을 클릭 시 상세 페이지로 이동하도록 구현하기 위해 작성했습니다.
+    단순하게 html 페이지를 보여주는 용도입니다.
+    """  
     return render(request, 'order_detail.html')   
 
 class OrderDetailView(
@@ -39,27 +43,15 @@ class OrderDetailView(
     
     def get(self, request, *args, **kwargs):
         return self.retrieve(request, args, kwargs)
-    
+   
+# data = {}
+# for key, value in request.data.lists():
+#     print(f'@@@@@ key: {key}, value: {value[0].strip()}')
+#     data[key] = value[0].strip()
 
-class CommentWriteView(
-    mixins.CreateModelMixin, 
-    generics.GenericAPIView
-):
-    
-    permission_classes = [IsAuthenticated]    
-    serializer_class = CommentSerializer
-    
-    def post(self, request, *args, **kwargs):
-        print('##### request.data > ', request.data)
-        # data = {}
-        # for key, value in request.data.lists():
-        #     print(f'@@@@@ key: {key}, value: {value[0].strip()}')
-        #     data[key] = value[0].strip()
-        
-        # data['member'] = request.user.id
-        # print(f'$$$$$ data > {data}')
-        # request.data = data
-        return self.create(request, args, kwargs)
+# data['member'] = request.user.id
+# print(f'$$$$$ data > {data}')
+# request.data = data
     
 class CommentCreateView(
     mixins.CreateModelMixin,
@@ -90,6 +82,7 @@ class CommentDeleteView(
     mixins.DestroyModelMixin, 
     generics.GenericAPIView,
 ):
+    
     permission_classes = [IsAuthenticated] 
     queryset = Comment.objects.all()
     
